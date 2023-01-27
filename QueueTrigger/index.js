@@ -9,7 +9,7 @@ module.exports = async function (context, myQueueItem) {
     const connection = mysql.createConnection({
         host: 'nscc-w0304263-mysql.mysql.database.azure.com',
         user: 'appuser',
-        password: 'Hd6s#4hfjs758',
+        password: process.env['db_password'],
         database: 'Development',
         ssl: {
             ca: fs.readFileSync(__dirname + "/DigiCertGlobalRootCA.crt.pem")
