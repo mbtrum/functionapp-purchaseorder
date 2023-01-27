@@ -4,26 +4,40 @@ const fs = require('fs')
 
 module.exports = async function (context, myQueueItem) {
 
-    context.log('JavaScript queue trigger function processed work item', myQueueItem);
+    const name = myQueueItem;
 
-    const connection = mysql.createConnection({
+    context.log('JavaScript queue trigger function processed work item: ', name)
+
+    /*************** Insert data into MySQL ******************/
+
+    // MySQL Connection Info
+    const config =
+    {
         host: 'nscc-w0304263-mysql.mysql.database.azure.com',
         user: 'appuser',
-        password: process.env['db_password'],
+        password: process.env['db_password'], // get password from local.settings.json
         database: 'Development',
+        port: 3306,
         ssl: {
             ca: fs.readFileSync(__dirname + "/DigiCertGlobalRootCA.crt.pem")
         }
+    }
+
+    // Create the MySQL connection
+    const connection = new mysql.createConnection(config)
+
+    // Connect to MySQL
+    connection.connect(function (err) {
+        if (err) throw err
     })
 
-    connection.connect()
+    // Execute SQL
+    connection.query('insert into persons(name) values (?);', [name], function (err, results, fields) {
+        if (err) throw err
+    })
 
-    context.log('connected to db')
-
-    connection.query("insert into persons(name) values (?);", [myQueueItem], function (error, results, fields) {
-        if (error) throw error;
-    });
-
-    connection.end()
-
+    // Close the connection
+    connection.end(function (err) {
+        if (err) throw err
+    })
 };
