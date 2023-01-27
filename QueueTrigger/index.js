@@ -18,6 +18,8 @@ module.exports = async function (context, myQueueItem) {
 
     connection.connect()
 
+    context.log('connected to db')
+
     connection.query("insert into persons(name) values (?);", [myQueueItem], function (error, results, fields) {
         if (error) throw error;
     });
