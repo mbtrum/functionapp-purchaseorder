@@ -40,4 +40,4 @@ module.exports = async function (context, myQueueItem) {
     connection.end(function (err) {
         if (err) throw err
     })
-};
+}
